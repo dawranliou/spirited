@@ -11,8 +11,6 @@ Written in [Fennel](https://fennel-lang.org/) lisp using
 ### Requirements
 
 - `tic80`
-- `fennel`
-- `entr`
 
 ### Run from source
 
@@ -34,7 +32,7 @@ Written in [Fennel](https://fennel-lang.org/) lisp using
 
 TODO
 
-#### Cat
+#### Ed the Cat
 
 TODO
 
