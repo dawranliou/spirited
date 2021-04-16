@@ -52,11 +52,11 @@
 
 (fn draw-player []
  (if (> p.idle-timer 10)
-  (spr (+ 102 (// (% t 60) 30)) p.x p.y 0 1 p.d 0 1 1)
-  (spr (+ 104 (// (% t 20) 10)) p.x p.y 0 1 p.d 0 1 1)))
+  (spr (+ 256 (// (% t 60) 30)) p.x p.y 0 1 p.d 0 1 1)
+  (spr (+ 258 (// (% t 20) 10)) p.x p.y 0 1 p.d 0 1 1)))
 
 (fn draw-cat []
- (spr (+ 134 (// (% t 60) 30)) c.x c.y 0 1 c.d 0 1 1))
+ (spr (+ 320 (// (% t 60) 30)) c.x c.y 0 1 c.d 0 1 1))
 
 (fn advance-game []
  (set t (+ t 1)))
