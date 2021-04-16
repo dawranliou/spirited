@@ -6,15 +6,15 @@ _This is my entry for [Sprint Lisp Game Jame
 Written in [Fennel](https://fennel-lang.org/) lisp using
 [TIC-80](https://tic.computer/).
 
-## Requirements
+## Development notes
+
+### Requirements
 
 - `tic80`
 - `fennel`
 - `entr`
 
-## Usage
-
-### Development
+### Run from source
 
 - `$ make run`
 
@@ -25,3 +25,39 @@ Written in [Fennel](https://fennel-lang.org/) lisp using
 - Enter `export html` and save the zip file wherever you want, for example in
   `build/`;
 - Quit the game and unzip the files.
+
+## Design notes
+
+### Characters
+
+#### Spirit
+
+TODO
+
+#### Cat
+
+TODO
+
+### Story
+
+TODO
+
+### Gameplay
+
+TODO
+
+### Art
+
+TODO
+
+### Music
+
+TODO
+
+### Sound effects
+
+TODO
+
+### Dialogues
+
+TODO
