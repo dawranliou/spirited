@@ -1,5 +1,5 @@
-;; title: game title
-;; author: game developer
+;; title: spirited
+;; author: dawranliou
 ;; desc: short description
 ;; script: fennel
 
