@@ -1,6 +1,6 @@
 # Spirited
 
-_This is my entry for [Sprint Lisp Game Jame
+_This is my entry for [Sprint Lisp Game Jam
 2021](https://itch.io/jam/spring-lisp-game-jam-2021)_
 
 Written in [Fennel](https://fennel-lang.org/) lisp using
