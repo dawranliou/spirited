@@ -60,8 +60,9 @@ TODO
 
 TODO
 
-## Credits
+## Credits and inspirations
 
 - https://gitlab.com/technomancy/fennel-dialog
 - https://gitlab.com/emmabukacek/this-is-my-mech/
 - https://p.hagelb.org/proton.tic.html
+- https://tic80.com/play?cart=636
