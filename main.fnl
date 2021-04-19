@@ -76,7 +76,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; characters
 
-(local p {:x 96 :y 24 :d 0 :idle-timer 0})
+(local p {:x (* 8 70) :y (* 8 60) :d 0 :idle-timer 0})
 (local c {:x 100 :y 50 :d 0})
 
 (set chars.ed {:x 100 :y 50 :name "ed"
