@@ -1,16 +1,21 @@
 # Spirited
 
-_This is my entry for [Sprint Lisp Game Jam
-2021](https://itch.io/jam/spring-lisp-game-jam-2021)_
+_This is my entry for [Sprint Lisp Game Jam 2021][1]_
 
-Written in [Fennel](https://fennel-lang.org/) lisp using
-[TIC-80](https://tic.computer/).
+Written in [Fennel][2] lisp using [TIC-80][3].
+
+The game is currently available [here][4]
+
+[1]: https://itch.io/jam/spring-lisp-game-jam-2021
+[2]: https://fennel-lang.org/
+[3]: https://tic.computer/
+[4]: https://dawranliou.github.io/spirited/public/
 
 ## Development notes
 
 ### Requirements
 
-- `tic80`
+- `tic80`: PRO Version to load assets as plain text
 
 ### Run from source
 
