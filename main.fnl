@@ -78,7 +78,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; characters
 
-(var p {:x 576 :y 464 :d 0 :idle-timer 0})
+(var p {:x 576 :y 464 :d 0 :idle-timer 0
+        :spr-idle 256 :spr-walk 258})
 
 (set chars.ed {:x 590 :y 470 :name "ed"
                :spr 320 :spr-walk 338 :portrait 336})
@@ -137,13 +138,14 @@
 
 (fn draw-dialog []
  (when said
-  ;; (rect 0 0 238 44 1)
+  (rect 0 0 238 44 1)
   (rectb 1 1 236 42 15)
   (print said 24 6)
   (when (and who who.portrait)
    (print who.name 5 30)
    (spr who.portrait 5 10 0 1 0 0 2 2))))
 
+;; https://github.com/nesbox/TIC-80/wiki/Camera-tutorial
 (fn lerp [a b t]
  (+ (* a (- 1 t)) (* t b)))
 
@@ -159,11 +161,12 @@
   (let [x* (+ cam.x c.x)
         y* (+ cam.y c.y)]
    (spr (+ c.spr (// (% t 60) 30)) x* y* 0 1 0 0 1 1)))
+ ;; Player
  (let [x* (+ p.x cam.x)
        y* (+ p.y cam.y)]
   (if (> p.idle-timer 10)
-   (spr (+ 256 (// (% t 60) 30)) x* y* 0 1 p.d 0 1 1)
-   (spr (+ 258 (// (% t 20) 10)) x* y* 0 1 p.d 0 1 1)))
+   (spr (+ p.spr-idle (// (% t 60) 30)) x* y* 0 1 p.d 0 1 1)
+   (spr (+ p.spr-walk (// (% t 20) 10)) x* y* 0 1 p.d 0 1 1)))
  (draw-dialog))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; game
@@ -176,5 +179,12 @@
 (global TIC
  (fn tic []
   (draw)
-  (move)
+  (let [talking-to (dialog p.x p.y (btnp 4) (btnp 5))]
+   (if (and talking-to (btnp 0)) (choose -1)
+    (and talking-to (btnp 1)) (choose 1)
+    (not talking-to) (move)))
+  (for [i (# coros) 1 -1]
+   (coroutine.resume (. coros i))
+   (when (= :dead (coroutine.status (. coros i)))
+    (table.remove coros i)))
   (set t (+ t 1))))
