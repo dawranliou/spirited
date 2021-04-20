@@ -9,9 +9,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; dialog
 
-(local chars {})
+;; Dialog functions from https://gitlab.com/technomancy/fennel-dialog
 
-(local coros {})
+(var chars {})
+
+(var coros {})
 
 (var said nil)
 (var who nil)
@@ -19,7 +21,7 @@
 (var choice nil)
 (var current-talk nil)
 
-(local convos {})
+(var convos {})
 
 (fn distance [a b]
   (let [x (- a.x b.x) y (- a.y b.y)]
@@ -36,7 +38,7 @@
     (set (said choices choice) nil)
     answer))
 
-(local talk-range 16)
+(var talk-range 16)
 
 (fn find-convo [x y]
   (var target nil)
@@ -76,10 +78,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; characters
 
-(local p {:x (* 8 70) :y (* 8 60) :d 0 :idle-timer 0})
-(local c {:x 100 :y 50 :d 0})
+(var p {:x 576 :y 464 :d 0 :idle-timer 0})
 
-(set chars.ed {:x 100 :y 50 :name "ed"
+(set chars.ed {:x 590 :y 470 :name "ed"
                :spr 320 :spr-walk 338 :portrait 336})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; collision
@@ -128,8 +129,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; draw
 
-(var camera-x p.x)
-(var camera-y p.y)
+(var cam {:x -400 :y -300})
 
 (fn draw-char [c]
  (let [spr-id (+ c.spr (// (% t 60) 30))]
@@ -149,19 +149,18 @@
 
 (fn draw []
  (cls)
- (set camera-x (math.min 120 (lerp camera-x (- 120 p.x) 0.05)))
- (set camera-y (math.min 64 (lerp camera-y (- 64 p.y) 0.05)))
- (map (// (- camera-x) 8) (// (- camera-y) 8)
-  32 19 (- (% camera-x 8) 8)
-  (- (% camera-y 8) 8) 0)
+ (set cam.x (math.min 120 (lerp cam.x (- 120 p.x) 0.05)))
+ (set cam.y (math.min 64 (lerp cam.y (- 64 p.y) 0.05)))
+ (let [ccx (// (- cam.x) 8)
+       ccy (// (- cam.y) 8)]
+  (map ccx ccy 32 19 (- (% cam.x 8) 8) (- (% cam.y 8) 8)))
  ;; NPC
  (each [name c (pairs chars)]
-  (let [x* (+ camera-x c.x)
-        y* (+ camera-y c.y)]
+  (let [x* (+ cam.x c.x)
+        y* (+ cam.y c.y)]
    (spr (+ c.spr (// (% t 60) 30)) x* y* 0 1 0 0 1 1)))
- ;; player
- (let [x* (+ camera-x p.x)
-       y* (+ camera-y p.y)]
+ (let [x* (+ p.x cam.x)
+       y* (+ p.y cam.y)]
   (if (> p.idle-timer 10)
    (spr (+ 256 (// (% t 60) 30)) x* y* 0 1 p.d 0 1 1)
    (spr (+ 258 (// (% t 20) 10)) x* y* 0 1 p.d 0 1 1)))
@@ -169,24 +168,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; game
 
-(var init? true)
+(fn init []
+ (music 0))
 
-(fn advance-game []
- (set t (+ t 1)))
-
-(fn initialize []
- (set said "Good morning Spirit!")
- (set who chars.ed)
- (music 0)
- (set init? false))
+(init)
 
 (global TIC
  (fn tic []
-  (when init?
-   (initialize))
-
   (draw)
-
   (move)
-
-  (advance-game)))
+  (set t (+ t 1))))
