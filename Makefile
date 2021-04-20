@@ -1,2 +1,2 @@
 run:
-	tic80 game.tic -code-watch main.fnl
+	tic80 main.fnl
