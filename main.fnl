@@ -6,8 +6,20 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; state
 
 (local ! {:t 0
-          :chars {:ed {:x 590 :y 470 :name "ed"
-                       :spr 320 :spr-walk 338 :portrait 336}}
+          :cam {:x -400
+                :y -300}
+          :p {:x 576
+              :y 464
+              :d 0
+              :idle-timer 0
+              :spr-idle 256
+              :spr-walk 258}
+          :chars {:ed {:x 590
+                       :y 470
+                       :name "ed"
+                       :spr 320
+                       :spr-walk 338
+                       :portrait 336}}
           :coros {}
           :said nil
           :who nil
@@ -15,10 +27,7 @@
           :choice nil
           :current-talk nil
           :convos {}
-          :talk-range 16
-          :p {:x 576 :y 464 :d 0 :idle-timer 0
-              :spr-idle 256 :spr-walk 258}
-          :cam {:x -400 :y -300}})
+          :talk-range 16})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; dialog
 
