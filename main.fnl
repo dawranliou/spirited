@@ -14,12 +14,46 @@
               :idle-timer 0
               :spr-idle 256
               :spr-walk 258}
-          :chars {:ed {:x 590
-                       :y 470
-                       :name "ed"
-                       :spr 320
-                       :spr-walk 338
-                       :portrait 336}}
+          :chars {
+                  :blue1 {:x (* 195 8)
+                          :y (* 50 8)
+                          :spr 384}
+                  :blue2 {:x (* 173 8)
+                          :y (* 65 8)
+                          :spr 386}
+                  :blue3 {:x (* 182 8)
+                          :y (* 113 8)
+                          :spr 388}
+                  :blue4 {:x (* 226 8)
+                          :y (* 117 8)
+                          :spr 390}
+                  :cyan1 {:x (* 195 8)
+                          :y (* 67 8)
+                          :spr 416}
+                  :cyan2 {:x (* 214 8)
+                          :y (* 12 8)
+                          :spr 418}
+                  :cyan3 {:x (* 171 8)
+                          :y (* 13 8)
+                          :spr 420}
+                  :cyan4 {:x (* 189 8)
+                          :y (* 29 8)
+                          :spr 422}
+                  :red1 {:x (* 189 8)
+                         :y (* 94 8)
+                         :spr 448}
+                  :red2 {:x (* 194 8)
+                         :y (* 37 8)
+                         :spr 450}
+                  :red3 {:x (* 179 8)
+                         :y (* 48 8)
+                         :spr 452}}
+          :ed {:x 590
+               :y 470
+               :name "ed"
+               :spr 320
+               :spr-walk 338
+               :portrait 336}
           :coros {}
           :said nil
           :who nil
@@ -175,8 +209,12 @@
   (each [name c (pairs !.chars)]
     (let [x* (+ !.cam.x c.x)
           y* (+ !.cam.y c.y)]
-      (spr (+ c.spr (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1)))
-  ;; Player
+      (spr c.spr x* y* 0 1 0 0 2 2)))
+  ;; Ed
+  (let [x* (+ !.cam.x !.ed.x)
+        y* (+ !.cam.y !.ed.y)]
+    (spr (+ !.ed.spr (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1))
+  ;; Spirit
   (let [x* (+ !.p.x !.cam.x)
         y* (+ !.p.y !.cam.y)]
     (if (> !.p.idle-timer 10)
