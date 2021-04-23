@@ -19,6 +19,7 @@
               :portrait 272}
           :chars {:ed {:x 590
                        :y 470
+                       :d 1
                        :name "ed"
                        :spr 320
                        :spr-walk 338
@@ -143,8 +144,9 @@
   (let [ch (. !.chars who)]
     (while (not (in-box? ch tx ty w h))
       (coroutine.yield)
-      (let [dx (towards ch.x !.p.x 10)
-            dy (towards ch.y !.p.y 18)]
+      (let [dx (towards ch.x !.p.x 15)
+            dy (towards ch.y !.p.y 0)]
+        (set ch.d (if (> dx 0) 0 1))
         (set ch.x (+ ch.x dx))
         (set ch.y (+ ch.y dy)))))
   (done))
@@ -160,6 +162,7 @@
     (fn mover []
       (let [[tx ty] coords
             dx (- tx !.chars.ed.x) dy (- ty !.chars.ed.y)]
+        (set !.chars.ed.d (if (> dx 0) 0 1))
         (set !.chars.ed.x (+ !.chars.ed.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
         (set !.chars.ed.y (+ !.chars.ed.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
         (coroutine.yield)
@@ -202,7 +205,12 @@
   (spirit-say "Really...?")
   (say "Alright, you win. Let's go home.")
   (set !.convos.ed nil)
-  (follow :ed 590 470 56 16 (fn [] (set !.convos.ed all.ed4))))
+  (set !.chars.ed.following? true)
+  (follow :ed (* 75 8) (* 52 8) (* 13 8) (* 13 8)
+          (fn []
+            (ed-run-away 590 470)
+            (set !.chars.ed.following? false)
+            (set !.convos.ed all.ed4))))
 
 (fn all.ed3 []
   (spirit-say "Hey, I'm sorry.")
@@ -211,12 +219,18 @@
   (say "Alright. I forgive you.")
   (say "Let's go home.")
   (set !.convos.ed nil)
-  (follow :ed 590 470 56 16 (fn [] (set !.convos.ed all.ed4))))
+  (set !.chars.ed.following? true)
+  (follow :ed (* 75 8) (* 52 8) (* 13 8) (* 13 8)
+          (fn []
+            (ed-run-away 590 470)
+            (set !.chars.ed.following? false)
+            (set !.convos.ed all.ed4))))
 
 (fn all.ed4 []
   (say "Good night, Spirit.")
   (say "I had a lot of fun today, actually.")
   (spirit-say "You're welcome. I had a lot of fun too.")
+  (spirit-say "Sorry for being a jerk earlier.")
   (spirit-say "Thank you for being my friend."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; collision
@@ -301,17 +315,21 @@
             y* (+ !.cam.y c.y)]
         (spr c.spr x* y* 0 1 0 0 2 2))))
   ;; Ed
-  (let [x* (+ !.cam.x !.chars.ed.x)
-        y* (+ !.cam.y !.chars.ed.y)]
-    (if !.chars.ed.moving?
-        (spr (+ !.chars.ed.spr-walk (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1)
-        (spr (+ !.chars.ed.spr (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1)))
+  (let [c !.chars.ed
+        x* (+ !.cam.x c.x)
+        y* (+ !.cam.y c.y)]
+    (if (or c.moving?)
+        (spr (+ c.spr-walk (// (% !.t 20) 10)) x* y* 0 1 c.d 0 1 1)
+        (and c.following?
+             (<= !.p.idle-timer 10))
+        (spr (+ c.spr-walk (// (% !.t 20) 10)) x* y* 0 1 c.d 0 1 1)
+        (spr (+ c.spr (// (% !.t 60) 30)) x* y* 0 1 c.d 0 1 1)))
   ;; Spirit
   (let [x* (+ !.p.x !.cam.x)
         y* (+ !.p.y !.cam.y)]
-    (if (> !.p.idle-timer 10)
-        (spr (+ !.p.spr-idle (// (% !.t 60) 30)) x* y* 0 1 !.p.d 0 1 1)
-        (spr (+ !.p.spr-walk (// (% !.t 20) 10)) x* y* 0 1 !.p.d 0 1 1)))
+    (if (<= !.p.idle-timer 10)
+        (spr (+ !.p.spr-walk (// (% !.t 20) 10)) x* y* 0 1 !.p.d 0 1 1)
+        (spr (+ !.p.spr-idle (// (% !.t 60) 30)) x* y* 0 1 !.p.d 0 1 1)))
   (draw-dialog))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; game
