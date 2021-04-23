@@ -234,7 +234,8 @@
   (say "I had a lot of fun today, actually.")
   (spirit-say "You're welcome. I had a lot of fun too.")
   (spirit-say "Sorry for being a jerk earlier.")
-  (spirit-say "Thank you for being my friend."))
+  (spirit-say "Thank you for being my friend.")
+  (set !.win? true))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; collision
 
@@ -337,11 +338,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; game
 
-(fn init []
-  (music 0)
-  (set !.convos.ed all.ed1))
+(fn win []
+  (cls)
+  (print "THE END" 42 48 15 false 4)
+  (print "Story by dawranliou" 42 72 15)
+  (print "Music by dawranliou" 42 80 15)
+  (print "Art by dawranliou" 42 88 15)
+  (print "Game by dawranliou" 42 96 15))
 
 (fn tic []
+  (when !.win?
+    (global TIC win))
   (draw)
   (let [talking-to (dialog !.p.x !.p.y (btnp 4) (btnp 5))]
     (if (and talking-to (btnp 0)) (choose -1)
@@ -352,6 +359,10 @@
     (when (= :dead (coroutine.status (. !.coros i)))
       (table.remove !.coros i)))
   (set !.t (+ !.t 1)))
+
+(fn init []
+  (music 0)
+  (set !.convos.ed all.ed1))
 
 (init)
 (global TIC tic)
