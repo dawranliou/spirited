@@ -31,43 +31,85 @@ The game is currently available [here][4]
 
 ## Design notes
 
+### World-building
+
+The duo-world of Spirited has two major worlds - The Dark Side and The Light
+Side, connected by The Bridge of Eternity. Though The Dark Side is full of
+dungeons and traps, it is the safer place of the two. The Light side, though
+bright and beautiful, is quite a dangerous place. Creatures inhibiting The Light
+Side are tough as hell (and sometimes very mean). Traveling between the worlds
+are sometimes dangerous too! The last thing you want is to get lost in the
+In-between Space.
+
+#### Dark Side
+
+Full of dungeons and traps, but otherwise safe.
+
+#### Light Side
+
+Bright and beautiful. Also dangerous.
+
+### Story
+
+The story is about two friends, Spirit and Ed, that got stuck inside the
+duo-world of Light Side and Dark Side.
+
+Notes: I really need to work on the storytelling and dialogues more but it is
+what it is.
+
 ### Characters
 
 #### Spirit
 
-TODO
+Spirit is the main protagonist in the story (also the player's POV.) Spirit
 
 #### Ed the Cat
 
-TODO
-
-### Story
-
-TODO
+Ed is Spirit's best friend.
 
 ### Gameplay
 
-TODO
+The game play is mostly dialogue driven, there are some potentials to add
+exploration/adventure into the game play but didn't have the resource to work on
+it. Later, perhaps.
+
+I took a lot of the game mechanics (and code) from technomancy's projects:
+
+- https://gitlab.com/technomancy/fennel-dialog
+- https://gitlab.com/emmabukacek/this-is-my-mech/
 
 ### Art
 
-TODO
+- Idle animations for characters
+- Walk animations for characters
+- Profiles for characters
+- NPC sprites
+- Ending screen
 
 ### Music
 
-TODO
+- Main theme song
 
 ### Sound effects
 
-TODO
-
-### Dialogues
-
-TODO
+- Drum
+- Hi-hat
+- Bass
 
 ## Credits and inspirations
+
+I took the boilerplate from the repo. Although I eventually remove the code from
+my repo as I progress, really appreciate the authors to get me started.
+
+- https://github.com/stefandevai/fennel-tic80-game/
+
+I studied the code and adopted a big chunk in this game. Thanks to technomancy's
+previous work!
 
 - https://gitlab.com/technomancy/fennel-dialog
 - https://gitlab.com/emmabukacek/this-is-my-mech/
 - https://p.hagelb.org/proton.tic.html
+
+I learned a lot from the tileset in this TIC-80 game I found:
+
 - https://tic80.com/play?cart=636
