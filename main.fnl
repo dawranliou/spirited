@@ -6,15 +6,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; state
 
 (local ! {:t 0
+          :win? false
           :cam {:x -400
                 :y -300}
-          :p {:x 576
+          :p {:name "spirit"
+              :x 576
               :y 464
               :d 0
               :idle-timer 0
               :spr-idle 256
-              :spr-walk 258}
-          :chars {
+              :spr-walk 258
+              :portrait 272}
+          :chars {:ed {:x 590
+                       :y 470
+                       :name "ed"
+                       :spr 320
+                       :spr-walk 338
+                       :portrait 336}
                   :blue1 {:x (* 195 8)
                           :y (* 50 8)
                           :spr 384}
@@ -48,12 +56,6 @@
                   :red3 {:x (* 179 8)
                          :y (* 48 8)
                          :spr 452}}
-          :ed {:x 590
-               :y 470
-               :name "ed"
-               :spr 320
-               :spr-walk 338
-               :portrait 336}
           :coros {}
           :said nil
           :who nil
@@ -75,6 +77,14 @@
   (set !.said (table.concat [...] "\n"))
   (coroutine.yield)
   (set !.said nil))
+
+(fn spirit-say [...]
+  (let [prev-who !.who]
+    (set !.who !.p)
+    (set !.said (table.concat [...] "\n"))
+    (coroutine.yield)
+    (set !.who prev-who)
+    (set !.said nil)))
 
 (fn ask [q ch]
   (set (!.said !.choices !.choice) (values q ch 1))
@@ -120,15 +130,94 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; characters
 
-(fn ed1 []
+(fn in-box? [c x y w h]
+  (and (<= x c.x (+ x w))
+       (<= y c.y (+ y h))))
+
+(fn towards [x tx offset]
+  (if (< (+ x offset) tx) 1
+      (> x (+ tx offset)) -1
+      :else 0))
+
+(fn follower [who tx ty w h done]
+  (let [ch (. !.chars who)]
+    (while (not (in-box? ch tx ty w h))
+      (coroutine.yield)
+      (let [dx (towards ch.x !.p.x 10)
+            dy (towards ch.y !.p.y 18)]
+        (set ch.x (+ ch.x dx))
+        (set ch.y (+ ch.y dy)))))
+  (done))
+
+(fn follow [who x y w h done]
+  (let [f (partial follower who x y w h done)
+        c (coroutine.create f)]
+    (table.insert !.coros c)))
+
+(fn ed-run-away [...]
+  (let [coords [...]]
+    (set !.chars.ed.moving? true)
+    (fn mover []
+      (let [[tx ty] coords
+            dx (- tx !.chars.ed.x) dy (- ty !.chars.ed.y)]
+        (set !.chars.ed.x (+ !.chars.ed.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
+        (set !.chars.ed.y (+ !.chars.ed.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
+        (coroutine.yield)
+        (when (and (<= (math.abs dx) 1) (<= (math.abs dy) 1))
+          (table.remove coords 1)
+          (table.remove coords 1))
+        (if (. coords 1)
+            (mover)
+            (set !.chars.ed.moving? false))))
+    (table.insert !.coros (coroutine.create mover))))
+
+(local all {})
+
+(fn all.ed1 []
   (say "Hey, Spirit! How's going?")
   (say "I feel it's been a while since last time"
        "we hanged out...")
-  (if (= "Sure!"
-         (ask "Do you want to go to the Light Side\nwith me, please?"
-              ["Sure!" "No, I'm busy."]))
-      (say "Great! Catch me if you can!")
-      (say "You suck! I'm leaving!")))
+  (let [good-mood?
+        (= "Sure!"
+           (ask "Do you want to go to the Light Side\nwith me, please?"
+                ["Sure!" "No, I'm busy."]))]
+    (if good-mood?
+        (say "Great! Catch me if you can!")
+        (say "You suck! I'm leaving!"))
+    (ed-run-away (* 195 8) (* 113 8))
+    (if good-mood?
+        (say "I bet you won't be able to catch me!")
+        (say "I don't want to see you again!"))
+    (spirit-say "...")
+    (spirit-say "Guess I have to run after him.")
+    (if good-mood?
+        (set !.convos.ed all.ed2)
+        (set !.convos.ed all.ed3))))
+
+(fn all.ed2 []
+  (spirit-say "Got ya!")
+  (say "!!")
+  (say "...")
+  (say "What took you so long?")
+  (spirit-say "Really...?")
+  (say "Alright, you win. Let's go home.")
+  (set !.convos.ed nil)
+  (follow :ed 590 470 56 16 (fn [] (set !.convos.ed all.ed4))))
+
+(fn all.ed3 []
+  (spirit-say "Hey, I'm sorry.")
+  (say "...")
+  (spirit-say "Can we please go home?")
+  (say "Alright. I forgive you.")
+  (say "Let's go home.")
+  (set !.convos.ed nil)
+  (follow :ed 590 470 56 16 (fn [] (set !.convos.ed all.ed4))))
+
+(fn all.ed4 []
+  (say "Good night, Spirit.")
+  (say "I had a lot of fun today, actually.")
+  (spirit-say "You're welcome. I had a lot of fun too.")
+  (spirit-say "Thank you for being my friend."))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; collision
 
@@ -205,15 +294,18 @@
   (let [ccx (// (- !.cam.x) 8)
         ccy (// (- !.cam.y) 8)]
     (map ccx ccy 32 19 (- (% !.cam.x 8) 8) (- (% !.cam.y 8) 8)))
-  ;; NPC
+  ;; NPCs
   (each [name c (pairs !.chars)]
-    (let [x* (+ !.cam.x c.x)
-          y* (+ !.cam.y c.y)]
-      (spr c.spr x* y* 0 1 0 0 2 2)))
+    (when (not= name "ed")
+      (let [x* (+ !.cam.x c.x)
+            y* (+ !.cam.y c.y)]
+        (spr c.spr x* y* 0 1 0 0 2 2))))
   ;; Ed
-  (let [x* (+ !.cam.x !.ed.x)
-        y* (+ !.cam.y !.ed.y)]
-    (spr (+ !.ed.spr (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1))
+  (let [x* (+ !.cam.x !.chars.ed.x)
+        y* (+ !.cam.y !.chars.ed.y)]
+    (if !.chars.ed.moving?
+        (spr (+ !.chars.ed.spr-walk (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1)
+        (spr (+ !.chars.ed.spr (// (% !.t 60) 30)) x* y* 0 1 0 0 1 1)))
   ;; Spirit
   (let [x* (+ !.p.x !.cam.x)
         y* (+ !.p.y !.cam.y)]
@@ -226,22 +318,22 @@
 
 (fn init []
   (music 0)
-  (set !.convos.ed ed1))
+  (set !.convos.ed all.ed1))
+
+(fn tic []
+  (draw)
+  (let [talking-to (dialog !.p.x !.p.y (btnp 4) (btnp 5))]
+    (if (and talking-to (btnp 0)) (choose -1)
+        (and talking-to (btnp 1)) (choose 1)
+        (not talking-to) (move)))
+  (for [i (# !.coros) 1 -1]
+    (assert (coroutine.resume (. !.coros i)))
+    (when (= :dead (coroutine.status (. !.coros i)))
+      (table.remove !.coros i)))
+  (set !.t (+ !.t 1)))
 
 (init)
-
-(global TIC
-        (fn tic []
-          (draw)
-          (let [talking-to (dialog !.p.x !.p.y (btnp 4) (btnp 5))]
-            (if (and talking-to (btnp 0)) (choose -1)
-                (and talking-to (btnp 1)) (choose 1)
-                (not talking-to) (move)))
-          (for [i (# !.coros) 1 -1]
-            (coroutine.resume (. !.coros i))
-            (when (= :dead (coroutine.status (. !.coros i)))
-              (table.remove !.coros i)))
-          (set !.t (+ !.t 1))))
+(global TIC tic)
 
 ;; <TILES>
 ;; 001:1111111011111111111111101111111111111110111111111111111001010101
