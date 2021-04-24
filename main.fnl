@@ -26,40 +26,64 @@
                        :portrait 336}
                   :blue1 {:x (* 195 8)
                           :y (* 50 8)
-                          :spr 384}
+                          :name "Edward"
+                          :spr 384
+                          :portrait 384}
                   :blue2 {:x (* 173 8)
                           :y (* 65 8)
-                          :spr 388}
+                          :name "Vossi"
+                          :spr 388
+                          :portrait 388}
                   :blue3 {:x (* 182 8)
                           :y (* 113 8)
-                          :spr 392}
+                          :name "Kenny"
+                          :spr 392
+                          :portrait 392}
                   :blue4 {:x (* 226 8)
                           :y (* 117 8)
-                          :spr 396}
+                          :name "Cora"
+                          :spr 396
+                          :portrait 396}
                   :cyan1 {:x (* 195 8)
                           :y (* 67 8)
-                          :spr 416}
+                          :name "Evelyn"
+                          :spr 416
+                          :portrait 416}
                   :cyan2 {:x (* 214 8)
                           :y (* 12 8)
-                          :spr 420}
+                          :name "Dwight"
+                          :spr 420
+                          :portrait 420}
                   :cyan3 {:x (* 171 8)
                           :y (* 13 8)
-                          :spr 424}
+                          :name "Bert"
+                          :spr 424
+                          :portrait 424}
                   :cyan4 {:x (* 189 8)
                           :y (* 29 8)
-                          :spr 428}
+                          :name "Bruce and Wyatt"
+                          :spr 428
+                          :portrait 428}
                   :red1 {:x (* 189 8)
                          :y (* 94 8)
-                         :spr 448}
+                         :name "Kendra"
+                         :spr 448
+                         :portrait 448}
                   :red2 {:x (* 194 8)
                          :y (* 37 8)
-                         :spr 452}
+                         :name "Vera"
+                         :spr 452
+                         :portrait 452}
                   :red3 {:x (* 179 8)
                          :y (* 48 8)
-                         :spr 456}
+                         :name "Donna and Annette"
+                         :spr 456
+                         :portrait 456}
                   :red4 {:x (* 226 8)
                          :y (* 72 8)
-                         :spr 460}}
+                         :name "Lorie"
+                         :spr 460
+                         :portrait 460}}
           :coros {}
           :said nil
           :who nil
@@ -237,6 +261,78 @@
   (spirit-say "Thank you for being my friend.")
   (set !.win? true))
 
+(fn all.blue1 []
+  (spirit-say "Have you seen Ed the yellow cat?"
+              "He just ran off in this direction\nnot too long ago.")
+  (ask "Yellow like my hair?" ["Yes" "No"])
+  (say "No idea.")
+  (spirit-say "..."))
+
+(fn all.blue2 []
+  (say "What are you looking at?")
+  (spirit-say "..."))
+
+(fn all.blue3 []
+  (say "Beep Boop Boop Beep.")
+  (spirit-say "Sir, have you seen...")
+  (say "Beep Boop Boop Beep.")
+  (spirit-say "my friend Ed?")
+  (say "Beep Boop Boop Beep.")
+  (spirit-say "..."))
+
+(fn all.blue4 []
+  (spirit-say "Sir, have you seen Ed?")
+  (say "Don't know. Don't care.")
+  (spirit-say "..."))
+
+(fn all.cyan1 []
+  (say "Do I look like a sushi?")
+  (spirit-say "..."))
+
+(fn all.cyan2 []
+  (say "!@3$%*U!!! *SCREAM*")
+  (spirit-say "(Better stay away...)"))
+
+(fn all.cyan3 []
+  (say "Sup dude?")
+  (spirit-say "I'm looking for my friend, Ed."
+              "Have you seen him?")
+  (say "I hate cats!")
+  (spirit-say "Okay..."))
+
+(fn all.cyan4 []
+  (say "Five, six, seven, eight...")
+  (say "Five, six, seven, eight...")
+  (spirit-say "Hey folks, have you seen...")
+  (say "Five, six, seven, eight...")
+  (say "Five, six, seven, eight...")
+  (spirit-say "..."))
+
+(fn all.red1 []
+  (let [lie?
+        (= "[LIE] I don't know"
+           (ask "I'm hungry. Where's that walking sushi?"
+                ["[LIE] I don't know"
+                 "[HONEST] He's over there..."]))]
+    (if lie?
+        (say "You LIAR!")
+        (say "I don't trust you!")))
+  (spirit-say "..."))
+
+(fn all.red2 []
+  (say "You're gonna hear me ROAR!"))
+
+(fn all.red3 []
+  (say "Cha cha cha!"))
+
+(fn all.red4 []
+  (spirit-say "Good day, sir. Have you seen my"
+              "friend, Ed?")
+  (say "Get out of here!"
+       "Can't you tell I'm doing important"
+       "business here?")
+  (spirit-say "(Not really...)"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; collision
 
 (fn solid? [x y]
@@ -362,9 +458,27 @@
 
 (fn init []
   (music 0)
-  (set !.convos.ed all.ed1))
+
+  (set !.convos.ed all.ed1)
+
+  (set !.convos.blue1 all.blue1)
+  (set !.convos.blue2 all.blue2)
+  (set !.convos.blue3 all.blue3)
+  (set !.convos.blue4 all.blue4)
+
+  (set !.convos.cyan1 all.cyan1)
+  (set !.convos.cyan2 all.cyan2)
+  (set !.convos.cyan3 all.cyan3)
+  (set !.convos.cyan4 all.cyan4)
+
+  (set !.convos.red1 all.red1)
+  (set !.convos.red2 all.red2)
+  (set !.convos.red3 all.red3)
+  (set !.convos.red4 all.red4))
 
 (init)
+;; Test ending screen
+;; (global TIC win)
 (global TIC tic)
 
 ;; <TILES>
